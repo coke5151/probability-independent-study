@@ -1,26 +1,53 @@
-import {useState} from 'react';
-import logo from './assets/images/logo-universal.png';
+import { useState } from 'react';
 import './App.css';
-import {Greet} from "../wailsjs/go/main/App";
+import { WindowSetAlwaysOnTop } from '../wailsjs/runtime';
+import { Pin } from 'lucide-react';
 
-function App() {
-    const [resultText, setResultText] = useState("Please enter your name below 👇");
-    const [name, setName] = useState('');
-    const updateName = (e: any) => setName(e.target.value);
-    const updateResultText = (result: string) => setResultText(result);
+function TopmostPin() {
+    const [isChecked, setIsChecked] = useState(false);
 
-    function greet() {
-        Greet(name).then(updateResultText);
-    }
+    const setTopmost = (turnOn: boolean) => {
+        WindowSetAlwaysOnTop(turnOn);
+    };
+
+    const handleClick = () => {
+        const newState = !isChecked;
+        setIsChecked(newState);
+        setTopmost(newState);
+    };
 
     return (
-        <div id="App">
-            <img src={logo} id="logo" alt="logo"/>
-            <div id="result" className="result">{resultText}</div>
-            <div id="input" className="input-box">
-                <input id="name" className="input" onChange={updateName} autoComplete="off" name="input" type="text"/>
-                <button className="btn" onClick={greet}>Greet</button>
+        <button
+            onClick={handleClick}
+            className="bg-transparent border-none cursor-pointer p-1 hover:bg-gray-100 rounded-full transition-colors"
+            title={isChecked ? "取消置頂" : "置頂"}
+        >
+            <Pin
+                size={20}
+                className={`transition-transform ${isChecked ? 'text-blue-500' : 'text-gray-500'}`}
+                style={{
+                    transform: isChecked ? 'rotate(0deg)' : 'rotate(-45deg)'
+                }}
+            />
+        </button>
+    );
+}
+
+function Menu() {
+    return (
+        <div className="flex justify-end mb-4">
+            <div>
+                <TopmostPin />
             </div>
+        </div>
+    );
+}
+
+
+function App() {
+    return (
+        <div id="App">
+            <Menu />
         </div>
     )
 }
