@@ -1,4 +1,4 @@
-module App
+module github.com/coke5151/probability-independent-study
 
 go 1.21
 
