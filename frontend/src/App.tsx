@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import './App.css';
 import { WindowSetAlwaysOnTop } from '../wailsjs/runtime';
-import { Pin } from 'lucide-react';
+import { Pin, Info } from 'lucide-react';
 import { FirstMethod } from '../wailsjs/go/main/App'
 
 import { BertrandPage } from './pages/Bertrandpage';
@@ -39,26 +39,44 @@ function TopmostPin() {
     );
 }
 
-function Menu() {
+function About() {
+    const [isOpen, setIsOpen] = useState(false);
+
+    const openModal = () => setIsOpen(true);
+    const closeModal = () => setIsOpen(false);
+
     return (
-        <div className="flex justify-end">
-            <div>
-                <TopmostPin />
-            </div>
-        </div>
+        <>
+            <button
+                onClick={openModal}
+                className="bg-transparent border-none cursor-pointer p-1 hover:bg-gray-100 rounded-full transition-colors"
+                title="關於"
+            >
+                <Info size={20} className="text-gray-500" />
+            </button>
+            {isOpen && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                    <div className="bg-black p-6 rounded-lg shadow-lg">
+                        <h2 className="text-xl font-bold mb-4">關於我們</h2>
+                        <p className="mb-4 text-left">這是用來模擬伯特蘭悖論、卡特蘭數、祕書問題、囚犯問題的程式。</p>
+                        <p className='text-left'>作者：</p>
+                        <p className='text-left'>程式 & GUI：侯竣奇</p>
+                        <p className='text-left'>理論推導：鄭弘翊</p>
+                        <p></p>
+                        <button
+                            onClick={closeModal}
+                            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                        >
+                            關閉
+                        </button>
+                    </div>
+                </div>
+            )}
+        </>
     );
 }
 
-function ConsoleLog() {
-    FirstMethod(5, 100).then((res) => {
-        console.log(res)
-    })
-    return <div>
-    </div>
-}
-
-
-function App() {
+function Menu() {
     const [activePage, setActivePage] = useState('');
 
     const renderPage = () => {
@@ -77,15 +95,30 @@ function App() {
     };
 
     return (
+        <>
+            <div className="flex justify-between">
+                <div className='flex justify-normal'>
+                    <About />
+                </div>
+                <div className='mt-1 ml-2'>
+                    <button onClick={() => setActivePage('bertrand')} className="mr-2 px-3 py-1 bg-blue-500 text-white rounded">伯特蘭悖論</button>
+                    <button onClick={() => setActivePage('catalan')} className="mr-2 px-3 py-1 bg-blue-500 text-white rounded">卡特蘭數</button>
+                    <button onClick={() => setActivePage('secretary')} className="mr-2 px-3 py-1 bg-blue-500 text-white rounded">秘書問題</button>
+                    <button onClick={() => setActivePage('prisoners')} className="px-3 py-1 bg-blue-500 text-white rounded">囚犯問題</button>
+                </div>
+                <div className='flex justify-end'>
+                    <TopmostPin />
+                </div>
+            </div>
+            {renderPage()}
+        </>
+    );
+}
+
+function App() {
+    return (
         <div id="App">
             <Menu />
-            <nav className="mb-4">
-                <button onClick={() => setActivePage('bertrand')} className="mr-2 px-3 py-1 bg-blue-500 text-white rounded">伯特蘭悖論</button>
-                <button onClick={() => setActivePage('catalan')} className="mr-2 px-3 py-1 bg-blue-500 text-white rounded">卡特蘭數</button>
-                <button onClick={() => setActivePage('secretary')} className="mr-2 px-3 py-1 bg-blue-500 text-white rounded">秘書問題</button>
-                <button onClick={() => setActivePage('prisoners')} className="px-3 py-1 bg-blue-500 text-white rounded">囚犯問題</button>
-            </nav>
-            {renderPage()}
         </div>
     );
 }
