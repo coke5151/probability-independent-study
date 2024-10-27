@@ -9,3 +9,11 @@ export function FirstMethod(arg1, arg2) {
 export function Greet(arg1) {
   return window['go']['main']['App']['Greet'](arg1);
 }
+
+export function SecondMethod(arg1, arg2) {
+  return window['go']['main']['App']['SecondMethod'](arg1, arg2);
+}
+
+export function ThirdMethod(arg1, arg2) {
+  return window['go']['main']['App']['ThirdMethod'](arg1, arg2);
+}
