@@ -1,7 +1,275 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import EChartsReact from 'echarts-for-react';
+import { FirstMethod } from '../../wailsjs/go/main/App';
+import { color } from 'echarts';
+
+async function fetchDataMethod1(setChartOption: any, setFavorable: any, setProbability: any, r: number, n: number) {
+    try {
+        setProbability("Calculating...");
+        const result = await FirstMethod(r, n);
+        const data = result.RandomPoints.map(point => ({
+            value: [point.Point.X, point.Point.Y],
+            itemStyle: {
+                color: point.IsFavorable ? 'green' : 'red' // 根據 IsFavorable 設置顏色
+            }
+        }));
+        setFavorable(result.Favorable);
+        setProbability(result.Probability);
+
+        // 繪製三角形的數據
+        const triangleData = [
+            {
+                coords: [
+                    [result.TriangleA.X, result.TriangleA.Y],
+                    [result.TriangleB.X, result.TriangleB.Y]
+                ],
+                lineStyle: {
+                    color: 'red', // 第一條邊的顏色
+                    width: 3
+                }
+            },
+            {
+                coords: [
+                    [result.TriangleB.X, result.TriangleB.Y],
+                    [result.TriangleC.X, result.TriangleC.Y]
+                ],
+                lineStyle: {
+                    color: 'green', // 第二條邊的顏色
+                    width: 3
+                }
+            },
+            {
+                coords: [
+                    [result.TriangleC.X, result.TriangleC.Y],
+                    [result.TriangleA.X, result.TriangleA.Y]
+                ],
+                lineStyle: {
+                    color: 'red', // 第三條邊的顏色
+                    width: 3
+                }
+            }
+        ];
+
+        // 繪製從 triangleA 連到每個點的線的數據
+        const lines = result.RandomPoints.map((point, index) => ({
+            coords: [
+                [result.TriangleA.X, result.TriangleA.Y],
+                [point.Point.X, point.Point.Y]
+            ]
+        }));
+
+        // 生成圓形的點，但這次使用極座標並且加入到 lines 中
+        const circleData = {
+            type: 'line',
+            smooth: true,
+            data: Array.from({ length: 361 }, (_, i) => {
+                const angle = (i * Math.PI) / 180;
+                return {
+                    value: [
+                        r * Math.cos(angle),
+                        r * Math.sin(angle)
+                    ]
+                };
+            }),
+            symbolSize: 0,  // 不顯示節點
+            lineStyle: {
+                color: 'blue',
+                width: 2,
+                type: 'solid'
+            }
+        };
+
+
+        setChartOption({
+            title: {
+                text: 'Bertrand Paradox'
+            },
+            grid: {
+                top: '20%',
+                bottom: `10%`,
+                left: `10%`,
+                right: `10%`,
+                containLabel: true,
+            },
+            xAxis: {
+                min: -r * 1.5,
+                max: r * 1.5
+            },
+            yAxis: {
+                min: -r * 1.5,
+                max: r * 1.5
+            },
+            series: [
+                circleData,  // 先畫圓
+                {
+                    type: "scatter",
+                    symbolSize: 1,
+                    data: data,
+                },
+                {
+                    // 從 triangleA 到點的線
+                    type: 'lines',
+                    coordinateSystem: 'cartesian2d',
+                    data: lines,
+                    lineStyle: {
+                        width: 5,
+                        opacity: 0.5,
+                        color: (params: any) => {
+                            return result.RandomPoints[params.dataIndex].IsFavorable ? 'green' : 'red';
+                        }
+                    }
+                },
+                {
+                    type: 'lines',
+                    coordinateSystem: 'cartesian2d',
+                    data: triangleData,
+                    lineStyle: {
+                        width: 5,
+                    }
+                },
+            ],
+        });
+    } catch (error) {
+        console.error("Error fetching data:", error);
+    }
+}
 
 export function BertrandPage() {
-    return <div>
-        <text>Bertrand</text>
-    </div>
+
+    const echartRef: any = useRef(null);
+
+    useEffect(() => {
+        const handleResize = () => {
+            echartRef.current.getEchartsInstance().resize();
+        };
+
+        window.addEventListener('resize', handleResize); // 監聽窗口大小變化
+        return () => {
+            window.removeEventListener('resize', handleResize); // 清除監聽器
+        };
+    }, []);
+
+    const [chartOption, setChartOption] = useState({});
+    const [showChart, setShowChart] = useState(true);
+
+    const toggleChartVisibility = () => {
+        setShowChart(prev => !prev);
+    };
+
+    const [r, setR] = useState('5');
+    const [n, setN] = useState('10');
+    const [favorable, setFavorable] = useState(0);
+    const [probability, setProbability] = useState(0);
+    const [error, setError] = useState('');
+
+    const handleRChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        // 移除非數字字符，並移除前導零
+        const newR = value.replace(/[^0-9.]/g, '').replace(/^0+(?!$|\.)/, '');
+        setR(newR === '' ? '0' : newR);
+    };
+
+    const handleNChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        // 移除非數字字符，並移除前導零
+        const newN = value.replace(/[^0-9]/g, '').replace(/^0+/, '');
+        setN(newN === '' ? '0' : newN);
+    };
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        const rNum = parseFloat(r);
+        const nNum = parseInt(n);
+        if (rNum <= 0 || nNum < 1 || !Number.isInteger(nNum)) {
+            setError('請確保 r 大於 0，n 為大於等於 1 的整數。');
+            return;
+        }
+        setError('');
+        fetchDataMethod1(setChartOption, setFavorable, setProbability, rNum, nNum);
+    };
+
+    const handleMethod2 = (e: React.FormEvent) => {
+        e.preventDefault();
+        const rNum = parseFloat(r);
+        const nNum = parseInt(n);
+        if (rNum <= 0 || nNum < 1 || !Number.isInteger(nNum)) {
+            setError('請確保 r 大於 0，n 為大於等於 1 的整數。');
+            return;
+        }
+        setError('');
+        // 呼叫 Method2 的函數
+        // fetchDataMethod2(setChartOption, rNum, nNum);
+    };
+
+    const handleMethod3 = (e: React.FormEvent) => {
+        e.preventDefault();
+        const rNum = parseFloat(r);
+        const nNum = parseInt(n);
+        if (rNum <= 0 || nNum < 1 || !Number.isInteger(nNum)) {
+            setError('請確保 r 大於 0，n 為大於等於 1 的整數。');
+            return;
+        }
+        setError('');
+        // 呼叫 Method3 的函數
+        // fetchDataMethod3(setChartOption, rNum, nNum);
+    };
+
+    return (
+        <div className='flex flex-row h-full w-full'>
+            <div className='mt-10 ml-10 w-1/2'>
+                {error && <p className="text-red-500 text-xs">{error}</p>}
+                <div className='flex flex-row'>
+                    <div className='w-1/2'>
+                        <form onSubmit={handleSubmit} className='flex flex-col space-y-4'>
+                            <div>
+                                <label htmlFor="r-input" className='block mb-0'>半徑 (r):</label>
+                                <input
+                                    id="r-input"
+                                    type="text"
+                                    inputMode="decimal"
+                                    value={r}
+                                    onChange={handleRChange}
+                                    className='w-full p-0.5 border rounded bg-slate-900'
+                                    autoComplete="off"
+                                />
+                            </div>
+                            <div>
+                                <label htmlFor="n-input" className='block mb-0'>點數 (n):</label>
+                                <input
+                                    id="n-input"
+                                    type="text"
+                                    inputMode="numeric"
+                                    value={n}
+                                    onChange={handleNChange}
+                                    className='w-full p-0.5 border rounded bg-slate-900'
+                                    autoComplete="off"
+                                />
+                            </div>
+                            <button type="submit" className='bg-blue-500 text-white p-0 rounded hover:bg-blue-600'>
+                                Method1
+                            </button>
+                            <button onClick={handleMethod2} className='bg-green-500 text-white p-0 rounded hover:bg-green-600'>
+                                Method2
+                            </button>
+                            <button onClick={handleMethod3} className='bg-red-500 text-white p-0 rounded hover:bg-red-600'>
+                                Method3
+                            </button>
+                        </form>
+                    </div>
+                    <div className='w-1/2'>
+                        <p>Result</p>
+                        <button onClick={toggleChartVisibility} className='bg-gray-500 text-white p-0.5 rounded hover:bg-gray-600'>
+                            {showChart ? '隱藏 ECharts' : '顯示 ECharts'}
+                        </button>
+                        <p>{favorable}/{n} = {probability}</p>
+                    </div>
+                </div>
+            </div>
+            <div className='w-1/2'>
+                <div className='aspect-square mt-5 ml-5'>
+                    {showChart && <EChartsReact option={chartOption} style={{ width: "100%", height: "100%", aspectRatio: 1 }} />}
+                </div>
+            </div>
+        </div>
+    );
 }

@@ -39,8 +39,8 @@ function TopmostPin() {
     );
 }
 
-function About() {
-    const [isOpen, setIsOpen] = useState(false);
+function About(props: any) {
+    const [isOpen, setIsOpen] = [props.isOpen, props.setIsOpen];
 
     const openModal = () => setIsOpen(true);
     const closeModal = () => setIsOpen(false);
@@ -76,8 +76,9 @@ function About() {
     );
 }
 
-function Menu() {
-    const [activePage, setActivePage] = useState('');
+function Menu(props: any) {
+    const [activePage, setActivePage] = [props.activePage, props.setActivePage]
+    const [isOpen, setIsOpen] = useState(false);
 
     const renderPage = () => {
         switch (activePage) {
@@ -95,10 +96,10 @@ function Menu() {
     };
 
     return (
-        <>
+        <div className='flex flex-col h-full'>
             <div className="flex justify-between">
                 <div className='flex justify-normal'>
-                    <About />
+                    <About isOpen={isOpen} setIsOpen={setIsOpen} />
                 </div>
                 <div className='mt-1 ml-2'>
                     <button onClick={() => setActivePage('bertrand')} className="mr-2 px-3 py-1 bg-blue-500 text-white rounded">伯特蘭悖論</button>
@@ -110,15 +111,17 @@ function Menu() {
                     <TopmostPin />
                 </div>
             </div>
-            {renderPage()}
-        </>
+            {!isOpen && renderPage()}
+        </div>
     );
 }
 
 function App() {
+    const [activePage, setActivePage] = useState('');
+
     return (
-        <div id="App">
-            <Menu />
+        <div id="App" className='h-full w-full'>
+            <Menu activePage={activePage} setActivePage={setActivePage} />
         </div>
     );
 }
