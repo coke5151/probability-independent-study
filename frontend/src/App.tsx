@@ -2,7 +2,6 @@ import { useState } from 'react';
 import './App.css';
 import { WindowSetAlwaysOnTop } from '../wailsjs/runtime';
 import { Pin, Info } from 'lucide-react';
-import { FirstMethod } from '../wailsjs/go/main/App'
 
 import { BertrandPage } from './pages/Bertrandpage';
 import { CatalanPage } from './pages/CatalanPage';
@@ -102,10 +101,26 @@ function Menu(props: any) {
                     <About isOpen={isOpen} setIsOpen={setIsOpen} />
                 </div>
                 <div className='mt-1 ml-2'>
-                    <button onClick={() => setActivePage('bertrand')} className="mr-2 px-3 py-1 bg-blue-500 text-white rounded">伯特蘭悖論</button>
-                    <button onClick={() => setActivePage('catalan')} className="mr-2 px-3 py-1 bg-blue-500 text-white rounded">卡特蘭數</button>
-                    <button onClick={() => setActivePage('secretary')} className="mr-2 px-3 py-1 bg-blue-500 text-white rounded">秘書問題</button>
-                    <button onClick={() => setActivePage('prisoners')} className="px-3 py-1 bg-blue-500 text-white rounded">囚犯問題</button>
+                    {
+                        activePage == 'bertrand' ?
+                            <button onClick={() => setActivePage('bertrand')} className="mr-2 px-3 py-1 bg-blue-500 text-white rounded">伯特蘭悖論</button>
+                            : <button onClick={() => setActivePage('bertrand')} className="mr-2 px-3 py-1 bg-slate-600 text-white rounded hover:bg-blue-500">伯特蘭悖論</button>
+                    }
+                    {
+                        activePage == 'catalan' ?
+                            <button onClick={() => setActivePage('catalan')} className="mr-2 px-3 py-1 bg-blue-500 text-white rounded">卡特蘭數</button>
+                            : <button onClick={() => setActivePage('catalan')} className="mr-2 px-3 py-1 bg-slate-600 text-white rounded hover:bg-blue-500">卡特蘭數</button>
+                    }
+                    {
+                        activePage == 'secretary' ?
+                            <button onClick={() => setActivePage('secretary')} className="mr-2 px-3 py-1 bg-blue-500 text-white rounded">秘書問題</button>
+                            : <button onClick={() => setActivePage('secretary')} className="mr-2 px-3 py-1 bg-slate-600 text-white rounded hover:bg-blue-500">秘書問題</button>
+                    }
+                    {
+                        activePage == 'prisoners' ?
+                            <button onClick={() => setActivePage('prisoners')} className="px-3 py-1 bg-blue-500 text-white rounded">囚犯問題</button>
+                            : <button onClick={() => setActivePage('prisoners')} className="px-3 py-1 bg-slate-600 text-white rounded hover:bg-blue-500">囚犯問題</button>
+                    }
                 </div>
                 <div className='flex justify-end'>
                     <TopmostPin />

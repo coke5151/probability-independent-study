@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/coke5151/probability-independent-study/internal/bertrand"
+	"github.com/coke5151/probability-independent-study/internal/catalan"
 )
 
 // App struct
@@ -38,4 +39,8 @@ func (a *App) SecondMethod(r float64, n int) bertrand.SecondMethodResult {
 
 func (a *App) ThirdMethod(r float64, n int) bertrand.ThirdMethodResult {
 	return bertrand.ThirdMethod(r, n)
+}
+
+func (a *App) Catalan(n int) [][][]catalan.Step {
+	return catalan.GenerateAllPath(n)
 }
