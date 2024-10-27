@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import EChartsReact from 'echarts-for-react';
 import { FirstMethod } from '../../wailsjs/go/main/App';
-import { color } from 'echarts';
 
 async function fetchDataMethod1(setChartOption: any, setFavorable: any, setProbability: any, r: number, n: number) {
     try {
