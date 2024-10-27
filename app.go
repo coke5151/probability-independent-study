@@ -35,3 +35,7 @@ func (a *App) FirstMethod(r float64, n int) bertrand.FirstMethodResult {
 func (a *App) SecondMethod(r float64, n int) bertrand.SecondMethodResult {
 	return bertrand.SecondMethod(r, n)
 }
+
+func (a *App) ThirdMethod(r float64, n int) bertrand.ThirdMethodResult {
+	return bertrand.ThirdMethod(r, n)
+}

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import EChartsReact from 'echarts-for-react';
-import { FirstMethod } from '../../wailsjs/go/main/App';
+import { FirstMethod, ThirdMethod } from '../../wailsjs/go/main/App';
 import { SecondMethod } from '../../wailsjs/go/main/App';
 
 async function fetchDataMethod1(setChartOption: any, setFavorable: any, setProbability: any, r: number, n: number) {
@@ -267,6 +267,142 @@ async function fetchDataMethod2(setChartOption: any, setFavorable: any, setProba
     }
 }
 
+async function fetchDataMethod3(setChartOption: any, setFavorable: any, setProbability: any, r: number, n: number) {
+    try {
+        setProbability("Calculating...");
+        setFavorable("?");
+        const result = await ThirdMethod(r, n);
+        const randomPoints = result.RandomPoints.map(point => ({
+            value: [point.Point.X, point.Point.Y],
+            itemStyle: {
+                color: point.IsFavorable ? 'green' : 'red', // 根據 IsFavorable 設置顏色
+            }
+        }));
+        setFavorable(result.Favorable);
+        setProbability(result.Probability);
+
+        // 繪製三角形的數據
+        const triangleData = [
+            {
+                coords: [
+                    [result.TriangleA.X, result.TriangleA.Y],
+                    [result.TriangleB.X, result.TriangleB.Y]
+                ],
+                lineStyle: {
+                    color: 'blue', // 第一條邊的顏色
+                    width: 5
+                }
+            },
+            {
+                coords: [
+                    [result.TriangleB.X, result.TriangleB.Y],
+                    [result.TriangleC.X, result.TriangleC.Y]
+                ],
+                lineStyle: {
+                    color: 'blue', // 第二條邊的顏色
+                    width: 5
+                }
+            },
+            {
+                coords: [
+                    [result.TriangleC.X, result.TriangleC.Y],
+                    [result.TriangleA.X, result.TriangleA.Y]
+                ],
+                lineStyle: {
+                    color: 'blue', // 第三條邊的顏色
+                    width: 5
+                }
+            }
+        ];
+
+        // 生成大圓形的點
+        const bigCircleData = {
+            type: 'line',
+            smooth: true,
+            data: Array.from({ length: 361 }, (_, i) => {
+                const angle = (i * Math.PI) / 180;
+                return {
+                    value: [
+                        r * Math.cos(angle),
+                        r * Math.sin(angle)
+                    ]
+                };
+            }),
+            symbolSize: 0,  // 不顯示節點
+            lineStyle: {
+                color: 'blue',
+                width: 2,
+                type: 'solid'
+            }
+        };
+
+        // 生成小圓形的點
+        const smallCircleData = {
+            type: 'line',
+            smooth: true,
+            data: Array.from({ length: 361 }, (_, i) => {
+                const angle = (i * Math.PI) / 180;
+                return {
+                    value: [
+                        r / 2 * Math.cos(angle),
+                        r / 2 * Math.sin(angle)
+                    ]
+                };
+            }),
+            symbolSize: 0,  // 不顯示節點
+            lineStyle: {
+                color: 'gray',
+                width: 2,
+                type: 'solid'
+            }
+        };
+
+
+        setChartOption({
+            title: {
+                text: 'Bertrand Paradox'
+            },
+            grid: {
+                top: '20%',
+                bottom: `10%`,
+                left: `10%`,
+                right: `10%`,
+                containLabel: true,
+            },
+            xAxis: {
+                min: -r * 1.5,
+                max: r * 1.5
+            },
+            yAxis: {
+                min: -r * 1.5,
+                max: r * 1.5
+            },
+            series: [
+                // 先畫大圓及小圓
+                bigCircleData,
+                smallCircleData,
+                // 三角形
+                {
+                    type: 'lines',
+                    coordinateSystem: 'cartesian2d',
+                    data: triangleData,
+                    lineStyle: {
+                        width: 5,
+                    }
+                },
+                {
+                    type: 'scatter',
+                    data: randomPoints,
+                    symbolSize: 5,
+                }
+            ],
+        });
+    } catch (error) {
+        console.error("Error fetching data:", error);
+    }
+}
+
+
 export function BertrandPage() {
 
     const echartRef: any = useRef(null);
@@ -346,7 +482,7 @@ export function BertrandPage() {
         }
         setError('');
         // 呼叫 Method3 的函數
-        // fetchDataMethod3(setChartOption, rNum, nNum);
+        fetchDataMethod3(setChartOption, setFavorable, setProbability, rNum, nNum);
     };
 
     return (

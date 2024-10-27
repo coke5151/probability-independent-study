@@ -7,3 +7,5 @@ export function FirstMethod(arg1:number,arg2:number):Promise<bertrand.FirstMetho
 export function Greet(arg1:string):Promise<string>;
 
 export function SecondMethod(arg1:number,arg2:number):Promise<bertrand.SecondMethodResult>;
+
+export function ThirdMethod(arg1:number,arg2:number):Promise<bertrand.ThirdMethodResult>;
