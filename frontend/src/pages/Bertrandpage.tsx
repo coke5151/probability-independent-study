@@ -529,9 +529,16 @@ export function BertrandPage() {
                     </div>
                     <div className='w-1/2'>
                         <p>Result</p>
-                        <button onClick={toggleChartVisibility} className='bg-gray-500 text-white p-0.5 rounded hover:bg-gray-600'>
-                            {showChart ? '隱藏 ECharts' : '顯示 ECharts'}
-                        </button>
+                        {
+                            showChart ?
+                                <button onClick={toggleChartVisibility} className='bg-blue-500 text-white p-0.5 rounded hover:bg-gray-600'>
+                                    顯示 ECharts
+                                </button>
+                                :
+                                <button onClick={toggleChartVisibility} className='bg-gray-500 text-white p-0.5 rounded hover:bg-blue-500'>
+                                    隱藏 ECharts
+                                </button>
+                        }
                         <p>{favorable}/{n} = {probability}</p>
                     </div>
                 </div>

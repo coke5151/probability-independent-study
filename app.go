@@ -5,6 +5,8 @@ import (
 	"fmt"
 
 	"github.com/coke5151/probability-independent-study/internal/bertrand"
+	"github.com/coke5151/probability-independent-study/internal/catalan"
+	"github.com/coke5151/probability-independent-study/internal/prisoners"
 )
 
 // App struct
@@ -38,4 +40,12 @@ func (a *App) SecondMethod(r float64, n int) bertrand.SecondMethodResult {
 
 func (a *App) ThirdMethod(r float64, n int) bertrand.ThirdMethodResult {
 	return bertrand.ThirdMethod(r, n)
+}
+
+func (a *App) GenerateAllCatalanPathPoints(n int) [][][]catalan.Point {
+	return catalan.GenerateAllPathPoints(n)
+}
+
+func (a *App) PrisonersProblem(attempts int) []float64 {
+	return prisoners.Simulate(attempts)
 }

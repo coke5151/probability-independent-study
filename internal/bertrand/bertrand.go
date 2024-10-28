@@ -91,7 +91,7 @@ type SecondMethodResult struct {
 	Probability        float64
 }
 
-func SecondMethod(r float64, n int) SecondMethodResult {
+func SecondMethod(r float64, n int) SecondMethodResult { // 隨機半徑法
 	alpha := rand.Float64() * (2 * math.Pi) // 隨機角度
 	beta := math.Abs(alpha - math.Pi/2)     // 垂直於 alpha
 
@@ -163,7 +163,7 @@ type ThirdMethodResult struct {
 	Probability  float64
 }
 
-func ThirdMethod(r float64, n int) ThirdMethodResult {
+func ThirdMethod(r float64, n int) ThirdMethodResult { // 隨機中點法
 	alpha := rand.Float64() * (2 * math.Pi) // 隨機角度
 
 	triangleA := Point{r * math.Cos(alpha), r * math.Sin(alpha)} // 取得一個點的座標
