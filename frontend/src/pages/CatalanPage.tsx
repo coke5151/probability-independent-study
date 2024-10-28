@@ -31,8 +31,8 @@ async function getPaths(n: number, setChartOption: any) {
     const leftMargin = 5;
     const rightMargin = 5;
 
-    const gridWidth = (100 - leftMargin - rightMargin) / cols;
-    const gridHeight = (100 - topMargin - bottomMargin) / cols;
+    const gridWidth = (95 - leftMargin - rightMargin) / cols;
+    const gridHeight = (80 - topMargin - bottomMargin) / cols;
     const gridSquare = Math.min(gridHeight, gridWidth);
 
     // 生成網格配置
@@ -44,8 +44,8 @@ async function getPaths(n: number, setChartOption: any) {
             gridSettings.push({
                 left: `${(leftMargin + j * gridWidth)}%`,
                 top: `${(topMargin + i * gridHeight)}%`,
-                width: `${(gridSquare)}%`,
-                height: `${(gridSquare)}%`,
+                width: `${(gridWidth - 5)}%`,
+                height: `${(gridHeight - 5)}%`,
                 containLabel: true,
             });
 
@@ -76,6 +76,7 @@ async function getPaths(n: number, setChartOption: any) {
                     }
                 }
             });
+
 
             // 對角線
             seriesSettings.push({
@@ -180,7 +181,7 @@ export function CatalanPage() {
                     </form>
                 </div>
             </div>
-            <div className='h-full ml-5 w-full' >
+            <div className='ml-5 w-full h-full' >
                 <div className='aspect-square mt-5 ml-5'>
                     <EChartsReact
                         option={chartOption}
