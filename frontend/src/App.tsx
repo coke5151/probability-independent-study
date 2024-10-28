@@ -135,7 +135,7 @@ function App() {
     const [activePage, setActivePage] = useState('');
 
     return (
-        <div id="App" className='flex flex-col h-full'>
+        <div id="App" className='flex flex-col h-full w-full'>
             <Menu activePage={activePage} setActivePage={setActivePage} />
         </div>
     );
