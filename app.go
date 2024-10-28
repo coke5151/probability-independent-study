@@ -41,6 +41,6 @@ func (a *App) ThirdMethod(r float64, n int) bertrand.ThirdMethodResult {
 	return bertrand.ThirdMethod(r, n)
 }
 
-func (a *App) Catalan(n int) [][][]catalan.Step {
-	return catalan.GenerateAllPath(n)
+func (a *App) GenerateAllCatalanPathPoints(n int) [][][]catalan.Point {
+	return catalan.GenerateAllPathPoints(n)
 }

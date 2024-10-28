@@ -95,12 +95,12 @@ function Menu(props: any) {
     };
 
     return (
-        <div className='flex flex-col h-full'>
-            <div className="flex justify-between">
+        <div className='flex flex-col h-full w-full'>
+            <div className="flex justify-between h-full w-full">
                 <div className='flex justify-normal'>
                     <About isOpen={isOpen} setIsOpen={setIsOpen} />
                 </div>
-                <div className='mt-1 ml-2'>
+                <div className='mt-1 ml-2 h-full w-full'>
                     {
                         activePage == 'bertrand' ?
                             <button onClick={() => setActivePage('bertrand')} className="mr-2 px-3 py-1 bg-blue-500 text-white rounded">伯特蘭悖論</button>
@@ -135,7 +135,7 @@ function App() {
     const [activePage, setActivePage] = useState('');
 
     return (
-        <div id="App" className='h-full w-full'>
+        <div id="App" className='flex flex-col h-full'>
             <Menu activePage={activePage} setActivePage={setActivePage} />
         </div>
     );
