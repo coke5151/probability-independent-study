@@ -1,23 +1,102 @@
-name: Wails build
+name: Cross-Platform Build
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   build:
     strategy:
-      fail-fast: false
       matrix:
-        build: [
-          {name: ProbabilityLinuxAMD64, platform: linux/amd64, os: ubuntu-latest},
-          {name: ProbabilityWinAMD64, platform: windows/amd64, os: windows-latest},
-          {name: ProbabilityDarwinUniversal, platform: darwin/universal, os: macos-latest}
-        ]
-    runs-on: ${{ matrix.build.os }}
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        include:
+          - os: ubuntu-latest
+            targets: linux/amd64,linux/arm64
+          - os: windows-latest
+            targets: windows/amd64,windows/arm64
+          - os: macos-latest
+            targets: darwin/universal
+    runs-on: ${{ matrix.os }}
+    
     steps:
-      - uses: actions/checkout@v2
-        with:
-          submodules: recursive
-      - uses: dAppServer/wails-build-action@v2.2
-        with:
-          build-name: ${{ matrix.build.name }}
-          build-platform: ${{ matrix.build.platform }}
+    - uses: actions/checkout@v4
+
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: '1.21'
+        cache: true
+    
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+    
+    - name: Install Wails
+      run: go install github.com/wailsapp/wails/v2/cmd/wails@latest
+    
+    - name: Install frontend dependencies
+      run: |
+        cd frontend
+        npm install
+    
+    - name: Build frontend
+      run: |
+        cd frontend
+        npm run build
+    
+    - name: Install build dependencies (Ubuntu)
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.0-dev gcc-aarch64-linux-gnu
+    
+    - name: Install build dependencies (macOS)
+      if: matrix.os == 'macos-latest'
+      run: |
+        brew install gcc
+    
+    - name: Build for Linux
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        # Build for AMD64
+        wails build -platform linux/amd64
+        
+        # Build for ARM64
+        CC=aarch64-linux-gnu-gcc wails build -platform linux/arm64
+    
+    - name: Build for Windows
+      if: matrix.os == 'windows-latest'
+      run: |
+        # Build for AMD64
+        wails build -platform windows/amd64
+        
+        # Build for ARM64
+        wails build -platform windows/arm64
+    
+    - name: Build for macOS Universal
+      if: matrix.os == 'macos-latest'
+      run: |
+        wails build -platform darwin/universal
+    
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: binaries-${{ matrix.os }}
+        path: |
+          build/bin/*
+        retention-days: 7
+
+    - name: Create Release
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      uses: softprops/action-gh-release@v1
+      with:
+        files: build/bin/*
+        generate_release_notes: true
+        draft: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
