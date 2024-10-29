@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import './App.css';
 import { WindowSetAlwaysOnTop } from '../wailsjs/runtime';
+import { BrowserOpenURL } from '../wailsjs/runtime';
 import { Pin, Info } from 'lucide-react';
 
 import { BertrandPage } from './pages/Bertrandpage';
@@ -61,7 +62,12 @@ function About(props: any) {
                         <p className='text-left'>作者：</p>
                         <p className='text-left'>程式 & GUI：侯竣奇</p>
                         <p className='text-left'>理論推導：鄭弘翊</p>
-                        <p></p>
+                        <button
+                            onClick={() => { BrowserOpenURL("https://github.com/coke5151/probability-independent-study") }}
+                            className='px-4 py-2 bg-slate-500 text-white rounded hover:bg-slate-400 mr-5 mt-5'
+                        >
+                            Github Repo
+                        </button>
                         <button
                             onClick={closeModal}
                             className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"

@@ -91,21 +91,6 @@ export function SecretaryPage() {
             },],
 
         });
-        if (maxData.index != -1) {
-            setChartOption((prev: any) => ({
-                ...prev,
-                graphic: [{
-                    type: 'text',
-                    left: 'center',
-                    top: `5%`,
-                    style: {
-                        text: `Max: ${maxData.value} at x: ${(maxData.index / 1000).toFixed(3)}`,
-                        fill: '#fff',
-                        font: 'bold 16px sans-serif',
-                    },
-                }],
-            }));
-        }
         return updatedData;
     }
 
@@ -122,6 +107,19 @@ export function SecretaryPage() {
             const currentMax = Math.max(...data);
             if (currentMax > maxData.value) {
                 maxData = { value: currentMax, index: data.indexOf(currentMax) }; // 更新最大值及其索引
+                setChartOption((prev: any) => ({
+                    ...prev,
+                    graphic: [{
+                        type: 'text',
+                        left: 'center',
+                        top: `5%`,
+                        style: {
+                            text: `Max: ${maxData.value} at x: ${(maxData.index / 1000).toFixed(3)}`,
+                            fill: '#fff',
+                            font: 'bold 16px sans-serif',
+                        },
+                    }],
+                }));
             }
         }
         if (totalNum % stepNum != 0) {
