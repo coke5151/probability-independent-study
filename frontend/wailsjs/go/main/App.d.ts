@@ -12,4 +12,6 @@ export function PrisonersProblem(arg1:number):Promise<Array<number>>;
 
 export function SecondMethod(arg1:number,arg2:number):Promise<bertrand.SecondMethodResult>;
 
+export function SecretaryDoMultipleRounds(arg1:number):Promise<any>;
+
 export function ThirdMethod(arg1:number,arg2:number):Promise<bertrand.ThirdMethodResult>;

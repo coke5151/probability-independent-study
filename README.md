@@ -16,10 +16,12 @@
 
 # How to run?
 
-- 方法一：安裝好 Go、Wails 後透過 `wails build` 進行編譯 
+- 方法一：安裝好 Go、Wails 後自行編譯
+- 方法二：下載 Release 的程式
 
 ## Environment
 
 - Backend: Go
 - Frontend: React with TypeScript
 - GUI: Wails V2
+- Compile command: `wails build -webview2 embed -platform darwin,darwin/amd64,darwin/arm64,darwin/universal,windows,windows/amd64,windows/arm64,linux,linux/amd64,linux/arm64`

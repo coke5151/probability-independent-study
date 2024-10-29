@@ -148,8 +148,8 @@ export function CatalanPage() {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         const nNum = parseInt(n);
-        if (nNum < 1 || !Number.isInteger(nNum)) {
-            setError('請確保 n 為大於等於 1 的整數。');
+        if (nNum < 1 || nNum > 3 || !Number.isInteger(nNum)) {
+            setError('為了顯示正常，請確保 1 <= n <= 3，且 n 為整數。');
             return;
         }
         setError('');
