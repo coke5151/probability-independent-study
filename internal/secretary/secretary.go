@@ -2,7 +2,9 @@ package secretary
 
 import (
 	"math/rand/v2"
+	"runtime"
 	"slices"
+	"sync"
 )
 
 // newSlice 產生由 start 至 end 的序列（左閉右開）
@@ -75,14 +77,47 @@ func doRound(roundSize int, rejectNumber int) bool {
 // Parameter
 //
 //	totalRounds: 每個 (0.1*i)% 要進行多少次面試
+
 func DoMultipleRound(totalRounds int) [1000]float64 {
-	success := [1000]float64{}
-	for rejectNumber := 0; rejectNumber < 1000; rejectNumber++ {
-		for i := 0; i < totalRounds; i++ {
-			if doRound(1000, rejectNumber) {
-				success[rejectNumber] += 1.0
+	cores := runtime.NumCPU()
+	eachWorkload := totalRounds / cores
+	remainWorkload := totalRounds - eachWorkload*cores
+	wg := &sync.WaitGroup{}
+
+	resultsPipe := make(chan [1000]float64, cores+5)
+
+	worker := func(totalRounds int) {
+		defer wg.Done()
+		success := [1000]float64{}
+		for rejectNumber := 0; rejectNumber < 1000; rejectNumber++ {
+			for i := 0; i < totalRounds; i++ {
+				if doRound(1000, rejectNumber) {
+					success[rejectNumber] += 1.0
+				}
 			}
 		}
+		resultsPipe <- success
 	}
+
+	if eachWorkload > 0 {
+		wg.Add(cores)
+		for range cores {
+			go worker(eachWorkload)
+		}
+	}
+	if remainWorkload > 0 {
+		wg.Add(1)
+		go worker(remainWorkload)
+	}
+
+	wg.Wait()
+	close(resultsPipe)
+	success := [1000]float64{}
+	for data := range resultsPipe {
+		for i := 0; i < 1000; i++ {
+			success[i] += data[i]
+		}
+	}
+
 	return success
 }
