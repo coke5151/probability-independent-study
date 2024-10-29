@@ -7,6 +7,7 @@ import (
 	"github.com/coke5151/probability-independent-study/internal/bertrand"
 	"github.com/coke5151/probability-independent-study/internal/catalan"
 	"github.com/coke5151/probability-independent-study/internal/prisoners"
+	"github.com/coke5151/probability-independent-study/internal/secretary"
 )
 
 // App struct
@@ -48,4 +49,8 @@ func (a *App) GenerateAllCatalanPathPoints(n int) [][][]catalan.Point {
 
 func (a *App) PrisonersProblem(attempts int) []float64 {
 	return prisoners.Simulate(attempts)
+}
+
+func (a *App) SecretaryDoMultipleRounds(totalRounds int) [1000]float64 {
+	return secretary.DoMultipleRound(totalRounds)
 }
