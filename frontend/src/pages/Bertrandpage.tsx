@@ -3,8 +3,9 @@ import EChartsReact from 'echarts-for-react';
 import { FirstMethod, ThirdMethod } from '../../wailsjs/go/main/App';
 import { SecondMethod } from '../../wailsjs/go/main/App';
 
-async function fetchDataMethod1(setChartOption: any, setFavorable: any, setProbability: any, r: number, n: number) {
+async function fetchDataMethod1(setChartOption: any, setFavorable: any, setProbability: any, r: number, n: number, setIsCalculating: any) {
     try {
+        setIsCalculating(true);
         setProbability("Calculating...");
         setFavorable("?");
         const result = await FirstMethod(r, n);
@@ -80,7 +81,7 @@ async function fetchDataMethod1(setChartOption: any, setFavorable: any, setProba
             }
         };
 
-
+        setIsCalculating(false);
         setChartOption({
             title: {
                 text: 'Bertrand Paradox'
@@ -136,8 +137,9 @@ async function fetchDataMethod1(setChartOption: any, setFavorable: any, setProba
     }
 }
 
-async function fetchDataMethod2(setChartOption: any, setFavorable: any, setProbability: any, r: number, n: number) {
+async function fetchDataMethod2(setChartOption: any, setFavorable: any, setProbability: any, r: number, n: number, setIsCalculating: any) {
     try {
+        setIsCalculating(true);
         setProbability("Calculating...");
         setFavorable("?");
         const result = await SecondMethod(r, n);
@@ -215,7 +217,7 @@ async function fetchDataMethod2(setChartOption: any, setFavorable: any, setProba
             }
         };
 
-
+        setIsCalculating(false);
         setChartOption({
             title: {
                 text: 'Bertrand Paradox'
@@ -267,8 +269,9 @@ async function fetchDataMethod2(setChartOption: any, setFavorable: any, setProba
     }
 }
 
-async function fetchDataMethod3(setChartOption: any, setFavorable: any, setProbability: any, r: number, n: number) {
+async function fetchDataMethod3(setChartOption: any, setFavorable: any, setProbability: any, r: number, n: number, setIsCalculating: any) {
     try {
+        setIsCalculating(true);
         setProbability("Calculating...");
         setFavorable("?");
         const result = await ThirdMethod(r, n);
@@ -357,7 +360,7 @@ async function fetchDataMethod3(setChartOption: any, setFavorable: any, setProba
             }
         };
 
-
+        setIsCalculating(false);
         setChartOption({
             title: {
                 text: 'Bertrand Paradox'
@@ -406,6 +409,7 @@ async function fetchDataMethod3(setChartOption: any, setFavorable: any, setProba
 export function BertrandPage() {
 
     const echartRef: any = useRef(null);
+    const [isCalculating, setIsCalculating] = useState(false);
 
     useEffect(() => {
         const handleResize = () => {
@@ -455,7 +459,7 @@ export function BertrandPage() {
         }
         setError('');
         setChartOption({});
-        fetchDataMethod1(setChartOption, setFavorable, setProbability, rNum, nNum);
+        fetchDataMethod1(setChartOption, setFavorable, setProbability, rNum, nNum, setIsCalculating);
     };
 
     const handleMethod2 = (e: React.FormEvent) => {
@@ -469,7 +473,7 @@ export function BertrandPage() {
         setError('');
         // 呼叫 Method2 的函數
         setChartOption({});
-        fetchDataMethod2(setChartOption, setFavorable, setProbability, rNum, nNum);
+        fetchDataMethod2(setChartOption, setFavorable, setProbability, rNum, nNum, setIsCalculating);
     };
 
     const handleMethod3 = (e: React.FormEvent) => {
@@ -482,7 +486,7 @@ export function BertrandPage() {
         }
         setError('');
         // 呼叫 Method3 的函數
-        fetchDataMethod3(setChartOption, setFavorable, setProbability, rNum, nNum);
+        fetchDataMethod3(setChartOption, setFavorable, setProbability, rNum, nNum, setIsCalculating);
     };
 
     return (
@@ -516,14 +520,18 @@ export function BertrandPage() {
                                     autoComplete="off"
                                 />
                             </div>
-                            <button type="submit" className='bg-blue-500 text-white p-0 rounded hover:bg-blue-600'>
-                                Method1
+                            <button type="submit" className='bg-blue-500 text-white p-0 rounded hover:bg-blue-600'
+                                disabled={isCalculating}>
+                                {isCalculating ? 'Calculating...' : 'Method1'}
                             </button>
-                            <button onClick={handleMethod2} className='bg-green-500 text-white p-0 rounded hover:bg-green-600'>
-                                Method2
+                            <button onClick={handleMethod2} className='bg-green-500 text-white p-0 rounded hover:bg-green-600'
+                                disabled={isCalculating}
+                            >
+                                {isCalculating ? 'Calculating...' : 'Method2'}
                             </button>
-                            <button onClick={handleMethod3} className='bg-red-500 text-white p-0 rounded hover:bg-red-600'>
-                                Method3
+                            <button onClick={handleMethod3} className='bg-red-500 text-white p-0 rounded hover:bg-red-600'
+                                disabled={isCalculating}>
+                                {isCalculating ? 'Calculating...' : 'Method3'}
                             </button>
                         </form>
                     </div>

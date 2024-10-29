@@ -6,6 +6,7 @@ import { SecretaryDoMultipleRounds } from '../../wailsjs/go/main/App';
 export function SecretaryPage() {
 
     const echartRef: any = useRef(null);
+    const [isCalculating, setIsCalculating] = useState(false);
 
     useEffect(() => {
         const handleResize = () => {
@@ -29,7 +30,6 @@ export function SecretaryPage() {
     const [step, setStep] = useState('100');
     const [hint, setHint] = useState('');
     const [error, setError] = useState('');
-    const [data, setData] = useState([]);
 
     const handleNChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
@@ -67,7 +67,7 @@ export function SecretaryPage() {
         });
         setChartOption({
             grid: {
-                left: '20%',
+                left: '25%',
                 right: '20%',
                 bottom: '20%',
                 top: '20%',
@@ -95,6 +95,7 @@ export function SecretaryPage() {
     }
 
     async function updateChart() {
+        setIsCalculating(true);
         const stepNum = Number(step)
         const totalNum = Number(n)
         let data = null;
@@ -126,6 +127,7 @@ export function SecretaryPage() {
             data = await updateARound(totalNum % stepNum, setChartOption, data, maxData);
         }
         setHint('');
+        setIsCalculating(false);
     }
 
     return (
@@ -159,8 +161,9 @@ export function SecretaryPage() {
                                     autoComplete="off"
                                 />
                             </div>
-                            <button type="submit" className='bg-blue-500 text-white p-0 rounded hover:bg-blue-600'>
-                                計算
+                            <button type="submit" className='bg-blue-500 text-white p-0 rounded hover:bg-blue-600'
+                                disabled={isCalculating}>
+                                {isCalculating ? '計算中…' : '計算'}
                             </button>
                         </form>
                     </div>

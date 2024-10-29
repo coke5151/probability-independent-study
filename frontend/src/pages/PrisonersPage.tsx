@@ -8,6 +8,7 @@ import { MoveRight } from 'lucide-react';
 export function PrisonersPage() {
 
     const echartRef: any = useRef(null);
+    const [isCalculating, setIsCalculating] = useState(false);
 
     useEffect(() => {
         const handleResize = () => {
@@ -48,16 +49,17 @@ export function PrisonersPage() {
         }
         setError('');
         setChartOption({});
-        updateChart();
+        updateChart(Number(n));
     };
 
-    async function updateChart() {
+    async function updateChart(n: number) {
+        setIsCalculating(true);
         setProbability("Calculating...");
-        const results: any = await PrisonersProblem(Number(n));
+        const results: any = await PrisonersProblem(n);
         setProbability(results[results.length - 1]);
         setChartOption({
             grid: {
-                left: '20%',
+                left: '25%',
                 right: '20%',
                 bottom: '20%',
                 top: '20%',
@@ -82,6 +84,7 @@ export function PrisonersPage() {
                 type: 'line', // 使用折線圖
             }],
         });
+        setIsCalculating(false);
     }
 
     return (
@@ -103,24 +106,25 @@ export function PrisonersPage() {
                                     autoComplete="off"
                                 />
                             </div>
-                            <button type="submit" className='bg-blue-500 text-white p-0 rounded hover:bg-blue-600'>
-                                計算
+                            <button type="submit" className='bg-blue-500 text-white p-0 rounded hover:bg-blue-600'
+                                disabled={isCalculating}>
+                                {isCalculating ? '計算中…' : '計算'}
                             </button>
-                            <div className='w-full'>
-                                <p>Result</p>
-                                {
-                                    showChart ?
-                                        <button onClick={toggleChartVisibility} className='bg-blue-500 text-white p-0.5 rounded hover:bg-gray-600'>
-                                            顯示 ECharts
-                                        </button>
-                                        :
-                                        <button onClick={toggleChartVisibility} className='bg-gray-500 text-white p-0.5 rounded hover:bg-blue-500'>
-                                            隱藏 ECharts
-                                        </button>
-                                }
-                                <p>P = {probability}</p>
-                            </div>
                         </form>
+                        <div className='w-full'>
+                            <p>Result</p>
+                            {
+                                showChart ?
+                                    <button onClick={toggleChartVisibility} className='bg-blue-500 text-white p-0.5 rounded hover:bg-gray-600'>
+                                        顯示 ECharts
+                                    </button>
+                                    :
+                                    <button onClick={toggleChartVisibility} className='bg-gray-500 text-white p-0.5 rounded hover:bg-blue-500'>
+                                        隱藏 ECharts
+                                    </button>
+                            }
+                            <p>P = {probability}</p>
+                        </div>
                     </div>
                 </div>
             </div>
