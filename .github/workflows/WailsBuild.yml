@@ -16,9 +16,7 @@ jobs:
         platform: [
           { name: linux-amd64, os: ubuntu-latest, build-platform: linux/amd64 },
           { name: wailsApp-windows-amd64, os: windows-latest, build-platform: windows/amd64 },
-          { name: wailsApp-windows-arm64, os: windows-latest, build-platform: windows/arm64 },
-          { name: wailsApp-macos-arm64, os: macos-latest, build-platform: darwin/arm64 },
-          { name: wailsApp-macos-amd64, os: macos-latest, build-platform: darwin/amd64 }
+          { name: wailsApp-windows-arm64, os: windows-latest, build-platform: windows/arm64 }
         ]
     runs-on: ${{ matrix.platform.os }}
     steps:
