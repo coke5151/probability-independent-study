@@ -14,11 +14,11 @@ jobs:
       fail-fast: false
       matrix:
         platform: [
-          { name: wailsApp-linux-amd64, os: ubuntu-latest, build-platform: linux/amd64 },
-          { name: wailsApp-linux-arm64, os: ubuntu-latest, build-platform: linux/arm64 },
+          { name: linux-amd64, os: ubuntu-latest, build-platform: linux/amd64 },
           { name: wailsApp-windows-amd64, os: windows-latest, build-platform: windows/amd64 },
           { name: wailsApp-windows-arm64, os: windows-latest, build-platform: windows/arm64 },
-          { name: wailsApp-macos-universal, os: macos-latest, build-platform: darwin/universal }
+          { name: wailsApp-macos-arm64, os: macos-latest, build-platform: darwin/arm64 },
+          { name: wailsApp-macos-amd64, os: macos-latest, build-platform: darwin/amd64 }
         ]
     runs-on: ${{ matrix.platform.os }}
     steps:
