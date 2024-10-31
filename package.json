@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "d3": "^7.9.0",
+    "plotly.js": "^2.35.2",
+    "recharts": "^2.13.2"
+  },
+  "devDependencies": {
+    "@types/d3": "^7.4.3",
+    "@types/plotly.js": "^2.33.5"
+  }
+}

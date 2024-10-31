@@ -1,8 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import EChartsReact from 'echarts-for-react';
 import { PrisonersProblem } from '../../wailsjs/go/main/App';
-import { number } from 'echarts';
-import { MoveRight } from 'lucide-react';
 
 
 export function PrisonersPage() {
@@ -29,6 +27,7 @@ export function PrisonersPage() {
     };
 
     const [n, setN] = useState('10');
+    const [prisoners, setPrisoners] = useState('100');
     const [probability, setProbability] = useState('0');
     const [error, setError] = useState('');
 
@@ -39,23 +38,30 @@ export function PrisonersPage() {
         setN(newN === '' ? '0' : newN);
     };
 
+    const handlePrisonersChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        // 移除非數字字符，並移除前導零
+        const newPrisoners = value.replace(/[^0-9]/g, '').replace(/^0+/, '');
+        setPrisoners(newPrisoners === '' ? '0' : newPrisoners);
+    };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         const nNum = parseInt(n);
-        if (nNum < 1 || !Number.isInteger(nNum)) {
-            setError('請確保 n 為大於等於 1 的整數。');
+        const prisonersNum = parseInt(prisoners)
+        if (nNum < 1 || prisonersNum < 1 || prisonersNum % 2 != 0 || !Number.isInteger(nNum) || !Number.isInteger(prisonersNum)) {
+            setError('請確保 n 為大於等於 1 的整數，且 prisoners number 應為偶數。');
             return;
         }
         setError('');
         setChartOption({});
-        updateChart(Number(n));
+        updateChart(Number(n), prisonersNum);
     };
 
-    async function updateChart(n: number) {
+    async function updateChart(n: number, prisoners: number) {
         setIsCalculating(true);
         setProbability("Calculating...");
-        const results: any = await PrisonersProblem(n);
+        const results: any = await PrisonersProblem(n, prisoners);
         setProbability(results[results.length - 1]);
         setChartOption({
             grid: {
@@ -102,6 +108,18 @@ export function PrisonersPage() {
                                     inputMode="numeric"
                                     value={n}
                                     onChange={handleNChange}
+                                    className='w-full p-0.5 border rounded bg-slate-900'
+                                    autoComplete="off"
+                                />
+                            </div>
+                            <div>
+                                <label htmlFor="prisoners-input" className='block mb-0'>Prisoners numbers:</label>
+                                <input
+                                    id="prisoners-input"
+                                    type="text"
+                                    inputMode="numeric"
+                                    value={prisoners}
+                                    onChange={handlePrisonersChange}
                                     className='w-full p-0.5 border rounded bg-slate-900'
                                     autoComplete="off"
                                 />

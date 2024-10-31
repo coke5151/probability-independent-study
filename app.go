@@ -47,8 +47,8 @@ func (a *App) GenerateAllCatalanPathPoints(n int) [][][]catalan.Point {
 	return catalan.GenerateAllPathPoints(n)
 }
 
-func (a *App) PrisonersProblem(attempts int) []float64 {
-	return prisoners.Simulate(attempts)
+func (a *App) PrisonersProblem(attempts int, prisonersNum int) []float64 {
+	return prisoners.Simulate(attempts, prisonersNum)
 }
 
 func (a *App) SecretaryDoMultipleRounds(totalRounds int) [1000]float64 {

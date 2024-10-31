@@ -7,5 +7,5 @@ import (
 )
 
 func main() {
-	fmt.Println(prisoners.Simulate(2))
+	fmt.Println(prisoners.Simulate(2, 100))
 }

@@ -431,6 +431,7 @@ export function BertrandPage() {
 
     const [r, setR] = useState('5');
     const [n, setN] = useState('10');
+    const [nNum, setNNum] = useState(10);
     const [favorable, setFavorable] = useState(0);
     const [probability, setProbability] = useState(0);
     const [error, setError] = useState('');
@@ -458,6 +459,7 @@ export function BertrandPage() {
             return;
         }
         setError('');
+        setNNum(nNum);
         setChartOption({});
         fetchDataMethod1(setChartOption, setFavorable, setProbability, rNum, nNum, setIsCalculating);
     };
@@ -471,6 +473,7 @@ export function BertrandPage() {
             return;
         }
         setError('');
+        setNNum(nNum);
         // 呼叫 Method2 的函數
         setChartOption({});
         fetchDataMethod2(setChartOption, setFavorable, setProbability, rNum, nNum, setIsCalculating);
@@ -485,6 +488,7 @@ export function BertrandPage() {
             return;
         }
         setError('');
+        setNNum(nNum);
         // 呼叫 Method3 的函數
         fetchDataMethod3(setChartOption, setFavorable, setProbability, rNum, nNum, setIsCalculating);
     };
@@ -547,7 +551,7 @@ export function BertrandPage() {
                                     隱藏 ECharts
                                 </button>
                         }
-                        <p>{favorable}/{n} = {probability}</p>
+                        <p>{favorable}/{nNum} = {probability}</p>
                     </div>
                 </div>
             </div>

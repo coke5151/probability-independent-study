@@ -52,11 +52,11 @@ func (t *testCase) attemptsResult() bool {
 	return prisonerSuccess
 }
 
-func Simulate(attempts int) (averageProbability []float64) {
+func Simulate(attempts int, prisoners int) (averageProbability []float64) {
 	success := 0
 	total := 0
 	for i := 0; i < attempts; i++ {
-		tc := newTestCase(100, 50)
+		tc := newTestCase(prisoners, prisoners/2)
 		if tc.attemptsResult() {
 			success++
 		}
