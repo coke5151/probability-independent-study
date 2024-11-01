@@ -1,3 +1,7 @@
+[![Release](https://img.shields.io/github/v/release/coke5151/probability-independent-study)](https://github.com/coke5151/probability-independent-study/releases)
+[![License](https://img.shields.io/github/license/coke5151/probability-independent-study)](LICENSE)
+[![Stars](https://img.shields.io/github/stars/coke5151/probability-independent-study)]()
+
 # 機率自主學習模擬程式 (課號 2355)
 
 ## 組員
